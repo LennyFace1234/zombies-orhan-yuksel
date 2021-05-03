@@ -1,0 +1,38 @@
+<script src="https://koda.nu/simple.js">
+
+    //När får vi en uppgift jag vill göra en uppgift
+    
+        var cat = {x: 100, y: 100, speed:5};
+
+        hideMouse();
+      
+        function update() 
+          {
+          fill("black");
+          
+          circle(mouse.x, mouse.y, 20, "red");
+          circle(cat.x, cat.y, 20, "blue");
+    
+          if (keyboard.s){
+            cat.y += cat.speed;
+          }
+          if (keyboard.a){
+            cat.x -= cat.speed;
+          }
+          if (keyboard.w){
+            cat.y -= cat.speed;
+          }
+          if (keyboard.d){
+            cat.x += cat.speed;
+          }
+    
+          var d = distance(mouse, cat);
+          
+          if (d < 40) {
+            text(50, 50, 20, "Game Over!", "black");
+            showMouse();
+            stopUpdate();
+          }
+        }
+    </script>
+    

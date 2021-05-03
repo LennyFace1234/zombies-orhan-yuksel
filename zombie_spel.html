@@ -1,0 +1,87 @@
+<script src="https://koda.nu/simple.js">
+
+    var zombies = []; // skappar en array av zombies
+
+
+    for(var i = 0 ; i < 6 ; i++) // Loopar igenom 6 gånger och lägger till zombies på random ställen med random speed mellan 1 - 5
+    {
+        zombies.push({x: random(totalWidth), y: random(totalHeight), speed: random(1,5)});
+
+    }
+
+    var dave = {
+        x: 0,
+        y: 0,
+        speed: 10,
+        bild: "https://cdn.discordapp.com/attachments/756466535798931556/834379134560894986/8407131dba8716eaab9d12dffd4c85f0_1.png"
+    } // skapar variabel dave som spelaren ska kontrollera med hjälp av W A S D. Jag ger även Dave koordinaterna 0,0 så att den spawnar längst upp i vänstra hörn. Jag ger honom också speed 10 som gör att han går runt i den farten. Jag ger Dave en bild som ska synas när där han är.
+
+    var count = 0;
+
+    function update()
+    {
+        clearScreen();
+
+        picture(dave.x, dave.y, dave.bild) // Här hämtar jag koordinaten och bild från variabeln dave och skriver ut det i skärmen.
+
+        // nedanför så gör jag så att knapparna "W A S D" gör att Dave går uppåt(W) Neråt(S) Höger(D) och vänster(A) genom att öka eller minska Daves Y och X koordinat 
+
+        if (keyboard.s){  
+            dave.y += dave.speed;
+        }
+        if (keyboard.a){
+            dave.x -= dave.speed;
+        }
+        if (keyboard.w){
+            dave.y -= dave.speed;
+        }
+        if (keyboard.d){
+            dave.x += dave.speed;
+        }
+          
+        // Nedan så gör jag så att om man klickar space på tangentbordet så startar intervallet och daves speed sätts till 25 istället för det normala 10. Count ökas med 1 och ifall den överstiger 1 (vilket den gör tillslut) så hoppar den av intervallet och daves speed sänks ner till 10 igen. Att klicka space ger honom alltså en speedboost i en period.
+
+        if (keyboard.space){
+            var id = setInterval(function(){
+                dave.speed = 25;
+                count += 1;
+                if (count>1){
+                    dave.speed = 10;
+                    count = 0;
+                    clearInterval(id);
+                }
+            },1000);
+        }
+
+        for(var zombie of zombies) // För varje zombie så ger jag den bilden länkat nedan. Jag gör även så att den följer efter daves x och y koordinat
+        {
+            picture(zombie.x, zombie.y, "https://cdn.discordapp.com/attachments/756466535798931556/834373583215263834/latestdouble.png"); // lägger till bild på zombie
+
+            if (zombie.x < dave.x)  
+                zombie.x += zombie.speed;
+            else
+                zombie.x -= zombie.speed;
+
+            if (zombie.y < dave.y)
+                zombie.y += zombie.speed;
+            else
+                zombie.y -= zombie.speed;
+
+            if (distance(dave, zombie) < 10) // Om distansen mellan dave och en zombie är mindre än 10 så kommer intervallet game over att starta. 
+            {
+                setInterval(game_over, 10);
+            }
+        }
+    }// under här i game over funktionen så stoppar jag update loopen, clearar screenen och målar upp texten som säger att du förlorat "game over och med instruktionerna att klicka enter för att starta om spelet. Samtidigt så kollar den om spelaren klickar enter. Om enter klickas så startas spelet om från början igen
+    function game_over(){
+        stopUpdate();
+        clearScreen();
+        text(500, 250, 15, "Game Over!", "red");
+        text(500, 300, 15, "Press 'Enter' to restart", "red");
+        if (keyboard.enter){
+            window.location.reload();
+        }
+
+    } 
+
+</script>
